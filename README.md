@@ -10,10 +10,11 @@ El PR deja el juego listo para revisar, no lo publica. Falta que Lucas incorpore
 
 ```bash
 pnpm install
+pnpm prepare
 pnpm dev
 ```
 
-Usar un secreto local de Wrangler, no versionado, para probar la foto. El Worker consulta `GET /photos/:id` con `Client-ID`; la web usa `photo.urls.regular` directamente y enlaza tanto al fotógrafo como a Unsplash. Cachea metadata una hora por instancia, con caché HTTP una hora. No descarga ni sirve copias de imágenes. En modo demo, Unsplash limita la API a 50 solicitudes/hora por aplicación, así que se debe vigilar el consumo real antes de hacer pública la ruta. El guardado de intentos y pista es local a cada dispositivo. No hay cuentas ni leaderboard.
+Usar un secreto local de Wrangler, no versionado, para probar la foto. El Worker consulta `GET /photos/:id` con `Client-ID`; la web usa `photo.urls.regular` directamente y enlaza tanto al fotógrafo como a Unsplash. Las fuentes del kit se copian desde paquetes @fontsource versionados al build y se sirven localmente, sin CDN externo en tiempo de ejecución. Cachea metadata una hora por instancia, con caché HTTP una hora. No descarga ni sirve copias de imágenes. En modo demo, Unsplash limita la API a 50 solicitudes/hora por aplicación, así que se debe vigilar el consumo real antes de hacer pública la ruta. El guardado de intentos y pista es local a cada dispositivo. No hay cuentas ni leaderboard.
 
 ```bash
 pnpm exec wrangler secret put UNSPLASH_ACCESS_KEY
