@@ -5,7 +5,7 @@
   "type": "module",
   "packageManager": "pnpm@10.18.3",
   "scripts": {
-    "check": "node --check worker.js && node --check public/fotograma/app.js && node --check scripts/prepare-fonts.mjs",
+    "check": "node --check worker.js && node --check public/fotograma/app.js && node --check scripts/prepare-fonts.mjs && node test.mjs",
     "dev": "pnpm prepare && wrangler dev",
     "deploy": "pnpm prepare && wrangler deploy",
     "prepare": "node scripts/prepare-fonts.mjs"
