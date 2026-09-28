@@ -1,1 +1,19 @@
-{"name":"fotograma","private":true,"version":"0.1.0","type":"module","packageManager":"pnpm@10.18.3","scripts":{"check":"node --check worker.js && node --check public/fotograma/app.js","dev":"wrangler dev","deploy":"wrangler deploy"},"devDependencies":{"wrangler":"^4.0.0"}}
+{
+  "name": "fotograma",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "packageManager": "pnpm@10.18.3",
+  "scripts": {
+    "check": "node --check worker.js && node --check public/fotograma/app.js && node --check scripts/prepare-fonts.mjs",
+    "dev": "pnpm prepare && wrangler dev",
+    "deploy": "pnpm prepare && wrangler deploy",
+    "prepare": "node scripts/prepare-fonts.mjs"
+  },
+  "devDependencies": {
+    "@fontsource/dm-mono": "5.2.7",
+    "@fontsource/source-serif-4": "5.2.8",
+    "@fontsource/space-grotesk": "5.2.8",
+    "wrangler": "^4.0.0"
+  }
+}
