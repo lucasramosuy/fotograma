@@ -7,3 +7,12 @@ workers_dev = true
 directory = "./public"
 binding = "ASSETS"
 run_worker_first = ["/fotograma/api/*", "/fotograma"]
+
+# Más específicas que lucasramos.uy/* del Worker proxy; no alterar sus rutas.
+[[routes]]
+pattern = "lucasramos.uy/fotograma"
+zone_name = "lucasramos.uy"
+
+[[routes]]
+pattern = "lucasramos.uy/fotograma/*"
+zone_name = "lucasramos.uy"
