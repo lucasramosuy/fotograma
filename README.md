@@ -1,21 +1,28 @@
 # Fotograma
 
-Una foto, una palabra. Juego breve de cinco intentos. Proyecto aparte de Leydle, bajo la identidad de lucasramos.uy. **Piloto: un acertijo curado.** No promete aún un puzzle distinto todos los días.
+Una foto, una palabra. Juego diario de cinco intentos bajo la identidad de lucasramos.uy. El primer acertijo fue NIEBLA (27/09/2026).
 
-## Estado
+## Juego diario
 
-El juego se publica al ejecutar manualmente el workflow **Desplegar Fotograma** desde la pestaña Actions, después de revisar y mergear el PR. Las dos credenciales (`CLOUDFLARE_API_TOKEN` y `UNSPLASH_ACCESS_KEY`) deben estar en GitHub Actions > Repository secrets. La primera tiene únicamente Workers Scripts (Read/Write) para Lucas Space y Workers Routes (Read/Write) en lucasramos.uy. Nunca ponerlas en el repositorio ni en el frontend. La key de Unsplash se carga como secreto del Worker en el mismo despliegue, sin una versión pública intermedia sin key. Sin clave, la UI explica por qué no puede cargar. No hay costes previstos en el volumen de este piloto, sujeto a límites de los planes gratuitos de Cloudflare y Unsplash.
+El Worker selecciona un acertijo curado de `PUZZLES` en `worker.js` según la fecha de Uruguay (UTC−3), empezando el 27/09/2026. La selección es igual para todos los jugadores y cambia a las 00:00 de Uruguay. El cliente carga `/fotograma/api/today` sin usar caché, usa el ID y la fecha que entrega la API y recarga la página cuando termina el día. Cada acertijo tiene foto, respuesta y pista revisadas: no se deduce la respuesta de etiquetas ambiguas de Unsplash.
+
+**El pool inicial contiene 14 acertijos distintos.** Tras el día 14 se repite el orden; antes de agotar el pool, añadir acertijos curados y ejecutar el deploy manual para mantener el juego nuevo. Cambiar el orden de los acertijos existentes cambia fechas futuras; no cambiar la fecha de inicio ni reutilizar IDs del día, ya que los intentos se guardan por ID. Este mecanismo no publica acertijos nuevos por sí solo de manera infinita.
+
+La racha cuenta **días consecutivos ganados** según la fecha del acertijo en Uruguay. Una derrota no suma; si pasa un día sin ganar, la racha visible vuelve a cero. Se guarda en `localStorage` del dispositivo: no sincroniza entre equipos y puede perderse al borrar los datos del navegador. Los intentos y la pista también se guardan por acertijo en el dispositivo. El botón de compartir aparece después de ganar o perder y copia una grilla de 🟩, 🟨 y ⬜, número de acertijo, intentos (`X/5` si se perdió) y enlace, sin revelar la palabra. Si el portapapeles está bloqueado, muestra el texto para copiarlo manualmente.
 
 ## Desarrollo
 
 ```bash
 pnpm install
 pnpm prepare
+pnpm run check
 pnpm dev
 ```
 
-Usar un secreto local de Wrangler, no versionado, para probar la foto. El Worker consulta `GET /photos/:id` con `Client-ID`; la web usa `photo.urls.regular` directamente y enlaza tanto al fotógrafo como a Unsplash. Las fuentes del kit se copian desde paquetes @fontsource versionados al build y se sirven localmente, sin CDN externo en tiempo de ejecución. Cachea metadata una hora por instancia, con caché HTTP una hora. No descarga ni sirve copias de imágenes. En modo demo, Unsplash limita la API a 50 solicitudes/hora por aplicación, así que se debe vigilar el consumo real antes de hacer pública la ruta. El guardado de intentos y pista es local a cada dispositivo. No hay cuentas ni leaderboard.
+Usar un secreto local de Wrangler, no versionado, para probar fotos reales. El Worker consulta `GET /photos/:id` con `Client-ID`; la web usa `photo.urls.regular` directamente y enlaza tanto al fotógrafo como a Unsplash. Las fuentes del kit se copian desde paquetes @fontsource versionados al build y se sirven localmente. La metadata se cachea una hora por instancia, pero nunca más allá de la medianoche uruguaya en la respuesta HTTP; el cliente siempre solicita el puzzle actual sin caché. No se descargan ni sirven copias de las imágenes. Unsplash en modo demo limita la API a 50 solicitudes/hora por aplicación: vigilar el consumo real antes de difundir el juego. No hay cuentas ni leaderboard.
 
-Despliegue manual: Actions > **Desplegar Fotograma** > **Run workflow** en `main`. El workflow instala pnpm, ejecuta `check` y `prepare`, y despliega Worker, assets y secreto en un solo comando. La configuración incluye `lucasramos.uy/fotograma` y `lucasramos.uy/fotograma/*`. Ambas son más específicas que `lucasramos.uy/*` del Worker proxy, de modo que Fotograma se sirve directamente sin modificar el código de `normativa` ni las rutas existentes. También queda `workers.dev` para diagnóstico. Futuros cambios de código requieren ejecutar el workflow de nuevo; no hay auto-deploy por merge.
+## Despliegue
+
+Después del merge: Actions > **Desplegar Fotograma** > **Run workflow** en `main`. El workflow instala pnpm, ejecuta `check` y `prepare`, y despliega Worker, assets y secreto en un solo comando. No hay auto-deploy por merge. Las credenciales `CLOUDFLARE_API_TOKEN` y `UNSPLASH_ACCESS_KEY` quedan en GitHub Actions > Repository secrets, nunca en el repo o frontend. La configuración incluye `lucasramos.uy/fotograma` y `lucasramos.uy/fotograma/*`, más específicas que la ruta del proxy general; no modifica el código de `normativa` ni otras rutas. También hay `workers.dev` para diagnóstico.
 
 Fuentes: https://unsplash.com/documentation · Reglas visuales: https://github.com/lucasramosuy/brand/blob/main/BRAND.md
