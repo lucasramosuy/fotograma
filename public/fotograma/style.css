@@ -44,3 +44,6 @@
 @media(max-width:720px){.archive-band{flex-direction:column;align-items:stretch;margin-top:24px;padding:20px 0 24px}.archive-band h2{font-size:28px}.archive-band .ab-link{justify-content:center}.archive-head{margin:19px 0 20px}.archive-head h1{font-size:37px}.archive-item{grid-template-columns:48px minmax(0,1fr) auto;gap:12px;padding:12px 0}.archive-item .ai-num{display:none}.archive-item img{width:48px;height:48px}.archive-item .ai-go{display:none}.ai-chip{font-size:11px}}
 .game-grid[hidden]{display:none}
 @media (pointer:coarse){.key-row button{height:44px}.credit a,.share-note a,.photo a{display:inline-flex;align-items:center;min-height:44px}}
+.footer-root{font:12px Mono,monospace;color:#4e6153;text-decoration:underline;text-underline-offset:3px}
+.footer-root:focus-visible{outline:2px solid #367263;outline-offset:2px}
+@media (pointer:coarse){.footer-root{display:inline-flex;align-items:center;min-height:44px}}
